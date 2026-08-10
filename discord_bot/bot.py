@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
-handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='discord_bot\\bot.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
 comm_prefix = '!'
@@ -29,7 +29,7 @@ async def on_message(message):
 
 
 @client.command()
-async def weather(ctx, msg):
+async def weather(ctx, *msg):
     await ctx.send(f"weather {msg}")
 
 
