@@ -1,6 +1,7 @@
-# Ignores environment variables and log files
+# Ignore certain file types
 .env
 .log
+.json
 
 # Ignore IDE settings
 .vscode/
