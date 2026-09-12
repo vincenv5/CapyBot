@@ -29,6 +29,9 @@ def get_full_joke() -> str:
     return f"{setup}\n{punchline}"
 
 
+__all__ = ["get_full_joke"]
+
+
 if __name__ == "__main__":
     joke = get_full_joke()
     print(joke)
