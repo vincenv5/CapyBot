@@ -3,7 +3,8 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from joke import get_full_joke
+from .joke import get_full_joke
+from .quote_scraper import get_quotes
 
 
 # setting up global constants, file, intents, and environment variables
@@ -17,6 +18,10 @@ comm_prefix = '!'
 
 # This establishes the bot with the command prefix, intents, log, and logging level
 client = commands.Bot(command_prefix=comm_prefix, intents=intents, log_handler=handler, log_level=logging.DEBUG)
+
+
+def run_bot():
+    client.run(token)
 
 
 """The client.events are what the bot will look out for."""
@@ -44,9 +49,16 @@ async def joke(ctx):
 
 
 @client.command()
-async def guide(ctx):
-    return 0
+async def quote(ctx):
+    print("Here!")
+    get_quotes()
+    with open('.quotes.json') as file:
+        for quote in file:
+            await ctx.send(quote)
+
+
+__all__ = ["run_bot"]
 
 
 if __name__ == "__main__":
-    client.run(token)
+    run_bot()
