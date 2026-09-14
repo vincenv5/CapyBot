@@ -1,6 +1,9 @@
 import logging
 import os
 import discord
+import asyncio
+from pathlib import Path
+from json import load
 from discord.ext import commands
 from dotenv import load_dotenv
 from .joke import get_full_joke
@@ -49,12 +52,27 @@ async def joke(ctx):
 
 
 @client.command()
-async def quote(ctx):
-    print("Here!")
-    get_quotes()
-    with open('.quotes.json') as file:
-        for quote in file:
-            await ctx.send(quote)
+async def quote(ctx) -> None:
+    """
+    This command will allow the user to have the bot post a quote within a chat. 
+    It does not return anything, but does create a json file 'quotes.json' inside the discord_bot
+    folder that stores scraped quotes.
+    """
+    # Calls the quote_scraper to scrape quotes from 'https://quotes.toscrape.com/'
+    # from an asyncio event loop to not block the discord bot's event loop
+    # and creates a 'quotes.json' file
+    quote_loop = asyncio.get_event_loop()
+    await quote_loop.run_in_executor(None, get_quotes)
+
+    # Opens 'quotes.json' and load quotes from JSON into Python dictionary form.
+    # For every quote within the file, will format each
+    with open(Path('discord_bot\\quotes.json')) as file:
+        quotes = load(file)
+        for quote in quotes:
+            formatted_quote = f"{quote["quote"]}\n"\
+                              f"\t-{quote["author"]}"
+
+            await ctx.send(formatted_quote)
 
 
 __all__ = ["run_bot"]

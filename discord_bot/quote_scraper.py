@@ -15,10 +15,10 @@ def get_quotes():
     # done here to only change this spider
     settings = {
                 "FEEDS": {
-                            "discord_bot\\quotes.json": {"format": "json"},
+                            "discord_bot\\quotes.json": {"format": "json",
+                                                         "overwrite": True},
                           },
                 }
-
     # To run the spider, I will use AsyncCrawlerProcess and return it for other parts of a program to use it
     process = CrawlerProcess(settings=settings)
     process.crawl(QuotesSpider)
@@ -48,4 +48,4 @@ __all__ = ["get_quotes"]
 
 
 if __name__ == "__main__":
-    print(get_quotes())
+    get_quotes()
