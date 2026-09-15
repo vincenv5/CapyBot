@@ -61,19 +61,24 @@ async def quote(ctx) -> None:
     # Calls the quote_scraper to scrape quotes from 'https://quotes.toscrape.com/'
     # from an asyncio event loop to not block the discord bot's event loop
     # and creates a 'quotes.json' file
-    quote_loop = asyncio.get_event_loop()
-    await quote_loop.run_in_executor(None, get_quotes)
 
+    async def _print_quotes():
+        with open(Path('discord_bot\\quotes.json')) as file:
+            quotes = load(file)
+            for quote in quotes:
+                formatted_quote = f"{quote["quote"]}\n"\
+                                    f"\t-{quote["author"]}"
+
+                await ctx.send(formatted_quote)
+
+    try:
     # Opens 'quotes.json' and load quotes from JSON into Python dictionary form.
     # For every quote within the file, will format each
-    with open(Path('discord_bot\\quotes.json')) as file:
-        quotes = load(file)
-        for quote in quotes:
-            formatted_quote = f"{quote["quote"]}\n"\
-                              f"\t-{quote["author"]}"
-
-            await ctx.send(formatted_quote)
-
+        await _print_quotes()
+    except FileNotFoundError:
+        quote_loop = asyncio.get_event_loop()
+        await quote_loop.run_in_executor(None, get_quotes)
+        await _print_quotes()
 
 __all__ = ["run_bot"]
 
