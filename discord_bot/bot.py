@@ -16,6 +16,8 @@ token = os.getenv('DISCORD_TOKEN')
 handler = logging.FileHandler(filename='discord_bot\\bot.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
 intents.message_content = True
+intents.presences = True
+intents.members = True
 comm_prefix = '!'
 
 
@@ -44,11 +46,27 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-"""The commands will run once it detects when the user sends a message that includes the command prefix
-   followed by the command phrase (i.e the name of the functions that are described below)"""
+#----------------------------------------Commands----------------------------------------#
+# The commands will run once it detects when the user sends a message that includes the command prefix
+# followed by the command phrase (i.e the name of the functions that are described below)
+
 @client.command()
 async def joke(ctx):
-    await ctx.send(get_full_joke())
+    """Command to get a joke. Will send a setup line, followed by
+    a punchline a couple seconds later"""
+    # Call to get a generator for the setup and punchline
+    joke = get_full_joke()
+
+    # First yield will get the setup, while the second yield will
+    # get the punchline
+    setup = next(joke)
+    punchline = next(joke)
+
+    # When te joke command is received, the bot will send the setup,
+    # wait a couple seconds, and then send the punchline
+    await ctx.send(setup)
+    await asyncio.sleep(2)
+    await ctx.send(punchline)
 
 
 @client.command()
@@ -83,6 +101,7 @@ async def quote(ctx) -> None:
 
         # Recalls '_print_quotes' 
         await _print_quotes()
+
 
 __all__ = ["run_bot"]
 
