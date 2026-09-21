@@ -8,6 +8,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from .joke import get_full_joke
 from .quote_scraper import get_quotes
+from .youtube import *
 
 
 # setting up global constants, file, intents, and environment variables
@@ -26,6 +27,7 @@ client = commands.Bot(command_prefix=comm_prefix, intents=intents, log_handler=h
 
 
 def run_bot():
+    print(token)
     client.run(token)
 
 
@@ -101,6 +103,12 @@ async def quote(ctx) -> None:
 
         # Recalls '_print_quotes' 
         await _print_quotes()
+
+
+@client.command()
+async def music(ctx) -> None:
+    for i in search_youtube():
+        await ctx.send(i)
 
 
 __all__ = ["run_bot"]
