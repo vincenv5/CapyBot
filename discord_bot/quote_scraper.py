@@ -36,12 +36,18 @@ class QuotesSpider(scrapy.Spider):
     start_urls = ["https://quotes.toscrape.com/"]
 
     def parse(self, response):
+        print(response)
         for quote in response.css("div.quote"):
             yield {
                     "quote": quote.css("span::text").get(),
                     "author": quote.css("small::text").get(),
-                    "tags": [i for i in _get_tags("a::text", quote.css("div.tags"))]
+                    "tags": [tag for tag in _get_tags("a::text", quote.css("div.tags"))]
             }
+
+        next_page = response.css("li.next a::attr(href)").get()
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
 
 
 __all__ = ["get_quotes"]
